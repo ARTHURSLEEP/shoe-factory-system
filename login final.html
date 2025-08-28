@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoe Factory Worker Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 400px;
+            max-width: 90%;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 36px;
+            margin: 0 auto 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #86868b;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f7;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e5e7;
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .error-message {
+            background: #fdedec;
+            color: #e74c3c;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .loading-message {
+            background: #cfe2ff;
+            color: #084298;
+            border: 1px solid #b6d4fe;
+        }
+        
+        .clock-display {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .clock-time {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+        
+        .clock-date {
+            color: #86868b;
+            margin-top: 5px;
+        }
+        
+        .demo-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #86868b;
+        }
+        
+        .demo-info strong {
+            color: #333;
+        }
+        
+        .firebase-config-warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ffeeba;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">SF</div>
+        <h1>Worker Login</h1>
+        <p class="subtitle">Shoe Factory Production System</p>
+        
+        <div class="clock-display">
+            <div class="clock-time" id="clock">--:--</div>
+            <div class="clock-date" id="date">Loading...</div>
+        </div>
+        
+        <div id="firebase-warning" class="firebase-config-warning" style="display: none;">
+            ⚠️ Firebase not configured! Please add your Firebase config.
+        </div>
+        
+        <div id="error-message" class="message error-message"></div>
+        <div id="success-message" class="message success-message"></div>
+        <div id="loading-message" class="message loading-message"></div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="username" required placeholder="Enter your username">
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" required placeholder="Enter your password">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="login-btn">Clock In & Start Work</button>
+            <button type="button" class="btn btn-secondary" onclick="goToManager()">Manager Access</button>
+        </form>
+        
+        <div class="demo-info">
+            <strong>How to Use:</strong><br>
+            1. First, set up Firebase (see instructions)<br>
+            2. Manager creates worker accounts<br>
+            3. Workers login here to see their orders<br>
+            4. All data syncs in real-time between devices
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCFyrBCfanQx__vgiqXxE19Laoivv3NLI",
+            authDomain: "shoe-factory-cfa28.firebaseapp.com",
+            projectId: "shoe-factory-cfa28",
+            storageBucket: "shoe-factory-cfa28.firebasestorage.app",
+            messagingSenderId: "81180885550",
+            appId: "1:81180885550:web:0477e17d4dc6ac748d95bf",
+            measurementId: "G-1CTV8RFXLR"
+        };
+
+        // Initialize Firebase
+        let db, auth;
+        
+        try {
+            if (firebaseConfig.apiKey) {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                auth = firebase.auth();
+            } else {
+                document.getElementById('firebase-warning').style.display = 'block';
+                document.getElementById('login-btn').disabled = true;
+            }
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            document.getElementById('firebase-warning').style.display = 'block';
+            document.getElementById('login-btn').disabled = true;
+        }
+
+        // Clock display
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-GB', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            const date = now.toLocaleDateString('en-GB', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            document.getElementById('clock').textContent = time;
+            document.getElementById('date').textContent = date;
+        }
+        
+        updateClock();
+        setInterval(updateClock, 1000);
+        
+        // Show message
+        function showMessage(type, text) {
+            // Hide all messages
+            document.querySelectorAll('.message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+            
+            // Show specific message
+            const messageEl = document.getElementById(type + '-message');
+            if (messageEl) {
+                messageEl.textContent = text;
+                messageEl.style.display = 'block';
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Handle login
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!auth || !db) {
+                showMessage('error', 'Firebase not configured. Please check setup.');
+                return;
+            }
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            console.log('Attempting login with username:', username);
+            
+            showMessage('loading', 'Logging in...');
+            document.getElementById('login-btn').disabled = true;
+            
+            try {
+                // Sign in anonymously first
+                await auth.signInAnonymously();
+                console.log('Anonymous auth successful');
+                
+                // Query workers collection for matching credentials
+                const workersRef = db.collection('workers');
+                const snapshot = await workersRef.get();
+                
+                console.log('Total workers found:', snapshot.size);
+                
+                // Log all workers for debugging
+                let foundMatch = false;
+                let workerId = null;
+                let workerData = null;
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    console.log('Worker:', data.username, 'Match:', data.username === username && data.password === password);
+                    
+                    if (data.username === username && data.password === password) {
+                        foundMatch = true;
+                        workerId = doc.id;
+                        workerData = data;
+                    }
+                });
+                
+                if (foundMatch) {
+                    console.log('Login successful for:', workerData.fullName);
+                    
+                    // Create session
+                    const session = {
+                        workerId: workerId,
+                        workerName: workerData.fullName,
+                        station: workerData.station,
+                        loginTime: new Date().toISOString(),
+                        clockInTime: new Date().toISOString()
+                    };
+                    
+                    // Store session
+                    sessionStorage.setItem('currentWorkerSession', JSON.stringify(session));
+                    
+                    // Record time tracking
+                    await db.collection('timeTracking').add({
+                        workerId: workerId,
+                        workerName: workerData.fullName,
+                        clockIn: firebase.firestore.FieldValue.serverTimestamp(),
+                        date: new Date().toISOString().split('T')[0]
+                    });
+                    
+                    // Log activity
+                    await db.collection('activityLog').add({
+                        type: 'worker_login',
+                        description: `${workerData.fullName} clocked in`,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    showMessage('success', 'Login successful! Redirecting...');
+                    
+                    // Redirect to worker dashboard
+                    setTimeout(() => {
+                        window.location.href = 'worker-dashboard.html';
+                    }, 1000);
+                } else {
+                    console.log('No matching worker found for username:', username);
+                    showMessage('error', 'Invalid username or password');
+                    document.getElementById('login-btn').disabled = false;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('error', 'Login failed: ' + error.message);
+                document.getElementById('login-btn').disabled = false;
+            }
+        });
+        
+        function goToManager() {
+            window.location.href = 'manager.html';
+        }
+    </script>
+</body>
+</html>

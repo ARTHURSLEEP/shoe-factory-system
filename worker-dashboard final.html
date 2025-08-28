@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            color: #1d1d1f;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+        }
+        
+        .header-info h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .header-info p {
+            color: #86868b;
+            font-size: 16px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .time-display {
+            text-align: right;
+        }
+        
+        .time-display .time {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        
+        .time-display .date {
+            color: #86868b;
+            font-size: 14px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .user-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .user-details p {
+            color: #86868b;
+            font-size: 14px;
+        }
+        
+        .status-badge {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            padding: 25px 30px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .card-content {
+            padding: 30px;
+        }
+        
+        /* Current Order */
+        .current-order {
+            margin-bottom: 30px;
+        }
+        
+        .order-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .order-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .order-info h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .order-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .order-details {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .priority-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .priority-badge.urgent {
+            background: rgba(255, 107, 107, 0.3);
+        }
+        
+        .progress-section {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .progress-percentage {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .progress-time {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        /* Backlog */
+        .backlog-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .backlog-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
+        }
+        
+        .backlog-item.urgent {
+            border-left: 4px solid #ff6b6b;
+        }
+        
+        .backlog-item.next {
+            border-left: 4px solid #feca57;
+        }
+        
+        .backlog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .backlog-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .backlog-subtitle {
+            font-size: 14px;
+            color: #86868b;
+        }
+        
+        .backlog-status {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+        
+        .backlog-status.next {
+            background: #fef9e7;
+            color: #f39c12;
+        }
+        
+        .backlog-status.urgent {
+            background: #fdedec;
+            color: #e74c3c;
+        }
+        
+        .backlog-status.queued {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+        
+        .backlog-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #86868b;
+        }
+        
+        /* Calendar */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .calendar-header {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #86868b;
+        }
+        
+        .calendar-day {
+            background: rgba(255, 255, 255, 0.7);
+            min-height: 80px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .calendar-day:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.02);
+        }
+        
+        .calendar-day.today {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .calendar-day.weekend {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .day-number {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .day-orders {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .order-chip {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 500;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        .order-chip.active {
+            background: rgba(255, 107, 107, 0.8);
+            color: white;
+        }
+        
+        .order-chip.completed {
+            background: rgba(79, 172, 254, 0.8);
+            color: white;
+        }
+        
+        .order-chip.due {
+            background: rgba(254, 202, 87, 0.8);
+            color: #333;
+        }
+        
+        /* Day details modal */
+        .day-details-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+        
+        .day-details-modal.show {
+            display: flex;
+        }
+        
+        .day-details-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlide 0.3s ease;
+        }
+        
+        .day-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .day-details-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .close-day-details {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #86868b;
+        }
+        
+        .day-order-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .day-order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .day-order-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .day-order-details {
+            color: #86868b;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlide 0.3s ease;
+        }
+        
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e5e5ea;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #fafafa;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #4facfe;
+            background: white;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #4facfe;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        /* Photo Upload */
+        .photo-upload-area {
+            border: 2px dashed #4facfe;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(79, 172, 254, 0.05);
+        }
+        
+        .photo-upload-area:hover {
+            background: rgba(79, 172, 254, 0.1);
+            border-color: #667eea;
+        }
+        
+        .photo-upload-area.has-photo {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .upload-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4facfe;
+            margin-bottom: 5px;
+        }
+        
+        .upload-subtext {
+            font-size: 14px;
+            color: #86868b;
+        }
+        
+        .photo-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        
+        .timer-display {
+            background: rgba(79, 172, 254, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .timer-label {
+            font-size: 14px;
+            color: #86868b;
+            margin-bottom: 5px;
+        }
+        
+        .timer-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4facfe;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.8);
+            color: #1d1d1f;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* Logout button */
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* No orders message */
+        .no-orders {
+            text-align: center;
+            padding: 60px 20px;
+            color: #86868b;
+        }
+        
+        .no-orders h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .no-orders p {
+            font-size: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-right {
+                flex-direction: column;
+            }
+            
+            .order-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .download-btn:hover {
+            background: #0056b3;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .success-message {
+            background: #d5f4e6;
+            color: #27ae60;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error-message {
+            background: #fdedec;
+            color: #e74c3c;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading-message {
+            background: #cfe2ff;
+            color: #084298;
+            border: 1px solid #b6d4fe;
+        }
+        
+        /* Success animation for modal */
+        .modal-success {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: white;
+            animation: successBounce 0.6s ease;
+        }
+        
+        @keyframes successBounce {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .success-message-text {
+            color: #86868b;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">SF</div>
+                <div class="header-info">
+                    <h1>Production Dashboard</h1>
+                    <p>Shoe Factory Production System</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="time-display">
+                    <div class="time" id="currentTime">14:32</div>
+                    <div class="date" id="currentDate">Wednesday, 18 June</div>
+                </div>
+                <div class="user-info">
+                    <div class="user-details">
+                        <h3 id="worker-name">Worker Name</h3>
+                        <p id="worker-station">Station</p>
+                    </div>
+                    <div class="avatar" id="worker-avatar">WN</div>
+                </div>
+                <div class="status-badge">
+                    <div class="status-dot"></div>
+                    On Duty
+                </div>
+                <button class="logout-btn" onclick="handleLogout()">Clock Out</button>
+            </div>
+        </div>
+        
+        <div id="success-message" class="message success-message"></div>
+        <div id="error-message" class="message error-message"></div>
+        <div id="loading-message" class="message loading-message"></div>
+
+        <div class="main-grid">
+            <!-- Main Content -->
+            <div class="main-content" id="mainContent">
+                <div class="loading-spinner"></div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Order Backlog -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Order Backlog</div>
+                    </div>
+                    <div class="card-content" id="orderBacklog">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+                
+                <!-- Schedule -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">This Week's Schedule</div>
+                    </div>
+                    <div class="card-content" id="weekSchedule">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stage Completion Modal -->
+    <div class="modal" id="stageModal">
+        <div class="modal-content" id="modalContent">
+            <h2 class="modal-title">Complete Order</h2>
+            
+            <!-- Timer Display -->
+            <div class="timer-display">
+                <div class="timer-label">Time Spent on This Order</div>
+                <div class="timer-value" id="stageTimer">0h 0m</div>
+            </div>
+            
+            <!-- Photo Upload -->
+            <div class="form-group">
+                <label class="form-label">Quality Control Photo</label>
+                <div class="photo-upload-area" id="photoUploadArea" onclick="document.getElementById('photoInput').click();">
+                    <div class="upload-icon">📷</div>
+                    <div class="upload-text">Take Photo</div>
+                    <div class="upload-subtext">Capture work progress for quality control</div>
+                </div>
+                <input type="file" id="photoInput" accept="image/*" capture="camera" style="display: none;" onchange="handlePhotoUpload(event)">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Quality Checklist</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="check1" checked>
+                        <label for="check1">All work completed to standard</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="check2" checked>
+                        <label for="check2">No defects or issues</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="check3" checked>
+                        <label for="check3">Ready for next stage</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Notes (Optional)</label>
+                <textarea class="form-input" rows="3" placeholder="Add any notes about this order..." id="stageNotes"></textarea>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeStageModal()">Cancel</button>
+                <button class="btn btn-primary" id="complete-order-btn" onclick="submitStageComplete()">Complete Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day Details Modal -->
+    <div class="day-details-modal" id="dayDetailsModal">
+        <div class="day-details-content">
+            <div class="day-details-header">
+                <h2 class="day-details-title" id="dayDetailsTitle">Day Details</h2>
+                <button class="close-day-details" onclick="closeDayDetails()">×</button>
+            </div>
+            <div id="dayDetailsContent"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCFyrBCfanQx__vgiqXxE19Laoivv3NLI",
+            authDomain: "shoe-factory-cfa28.firebaseapp.com",
+            projectId: "shoe-factory-cfa28",
+            storageBucket: "shoe-factory-cfa28.firebasestorage.app",
+            messagingSenderId: "81180885550",
+            appId: "1:81180885550:web:0477e17d4dc6ac748d95bf",
+            measurementId: "G-1CTV8RFXLR"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        const storage = firebase.storage();
+
+        // Global variables
+        let currentSession = null;
+        let workerOrders = [];
+        let currentOrder = null;
+        let stageStartTime = null;
+        let stageTimer = null;
+        let selectedPhotoFile = null;
+        let unsubscribers = [];
+
+        // Show message
+        function showMessage(type, text) {
+            document.querySelectorAll('.message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+            
+            const messageEl = document.getElementById(type + '-message');
+            if (messageEl) {
+                messageEl.textContent = text;
+                messageEl.style.display = 'block';
+                
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Initialize the dashboard
+        async function initDashboard() {
+            // Check for session
+            const sessionData = sessionStorage.getItem('currentWorkerSession');
+            
+            if (!sessionData) {
+                // No session, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            currentSession = JSON.parse(sessionData);
+            
+            // Update worker info
+            document.getElementById('worker-name').textContent = currentSession.workerName;
+            document.getElementById('worker-station').textContent = currentSession.station;
+            
+            // Set avatar initials
+            const initials = currentSession.workerName.split(' ').map(n => n[0]).join('').substring(0, 2);
+            document.getElementById('worker-avatar').textContent = initials;
+            
+            // Sign in to Firebase
+            try {
+                await auth.signInAnonymously();
+                
+                // Set up real-time listeners
+                setupRealtimeListeners();
+                
+                // Update time
+                updateDateTime();
+                setInterval(updateDateTime, 1000);
+                
+            } catch (error) {
+                console.error('Auth error:', error);
+                showMessage('error', 'Authentication failed. Please login again.');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+        }
+
+        // Set up real-time listeners
+        function setupRealtimeListeners() {
+            // Listen to orders assigned to this worker
+            const ordersListener = db.collection('orders')
+                .where('assignedWorker', '==', currentSession.workerId)
+                .onSnapshot(snapshot => {
+                    loadWorkerOrders(snapshot);
+                }, error => {
+                    console.error('Orders listener error:', error);
+                    showMessage('error', 'Failed to load orders. Please refresh.');
+                });
+            unsubscribers.push(ordersListener);
+        }
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-GB', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            const dateString = now.toLocaleDateString('en-GB', { 
+                weekday: 'long', 
+                day: 'numeric',
+                month: 'long'
+            });
+            
+            document.getElementById('currentTime').textContent = timeString;
+            document.getElementById('currentDate').textContent = dateString;
+        }
+
+        // Load orders for this worker
+        function loadWorkerOrders(snapshot) {
+            workerOrders = [];
+            snapshot.forEach(doc => {
+                workerOrders.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            
+            // Sort orders by due date/time
+            workerOrders.sort((a, b) => {
+                const dateA = new Date(a.dueDate + ' ' + a.dueTime);
+                const dateB = new Date(b.dueDate + ' ' + b.dueTime);
+                return dateA - dateB;
+            });
+            
+            // Display current order
+            displayCurrentOrder();
+            
+            // Display backlog
+            displayOrderBacklog();
+            
+            // Display week schedule
+            displayWeekSchedule();
+        }
+
+        // Display current order
+        function displayCurrentOrder() {
+            const mainContent = document.getElementById('mainContent');
+            
+            // Find active or next pending order
+            currentOrder = workerOrders.find(o => o.status === 'active') || 
+                          workerOrders.find(o => o.status === 'pending');
+            
+            if (!currentOrder) {
+                mainContent.innerHTML = `
+                    <div class="card">
+                        <div class="card-content no-orders">
+                            <h3>No Active Orders</h3>
+                            <p>You have no orders assigned. Check back later or contact your supervisor.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const dueDateTime = new Date(currentOrder.dueDate + ' ' + currentOrder.dueTime);
+            const now = new Date();
+            const isOverdue = dueDateTime < now;
+            
+            // Build order files HTML - check both new and old format
+            let orderFilesHTML = '';
+            
+            // Debug log to see what's in the order
+            console.log('Current order data:', currentOrder);
+            console.log('Order files:', currentOrder.orderFiles);
+            
+            if (currentOrder.orderFiles && Array.isArray(currentOrder.orderFiles) && currentOrder.orderFiles.length > 0) {
+                orderFilesHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 10px;">Order Forms:</h4>
+                        ${currentOrder.orderFiles.map(file => `
+                            <a href="${file.url}" target="_blank" class="download-btn" style="display: inline-block; margin-right: 10px; margin-bottom: 10px;">
+                                📄 View ${file.name}
+                            </a>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (currentOrder.orderFormUrl && currentOrder.orderFormName) {
+                // Fallback to old format
+                orderFilesHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 10px;">Order Form:</h4>
+                        <a href="${currentOrder.orderFormUrl}" target="_blank" class="download-btn">
+                            📄 View ${currentOrder.orderFormName}
+                        </a>
+                    </div>
+                `;
+            }
+            
+            mainContent.innerHTML = `
+                <div class="card current-order">
+                    <div class="order-hero">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <h2>Order ${currentOrder.orderNumber}</h2>
+                                <div class="order-subtitle">${currentOrder.productName}</div>
+                                <div class="order-details">${currentOrder.customerName ? `Customer: ${currentOrder.customerName} • ` : ''}${currentOrder.color} • Size ${currentOrder.size} • Qty: ${currentOrder.quantity} • Due ${formatDateTime(dueDateTime)}</div>
+                            </div>
+                            <div class="priority-badge ${isOverdue ? 'urgent' : ''}">${currentOrder.priority === 'urgent' ? 'Urgent' : currentOrder.priority === 'high' ? 'High Priority' : 'Normal Priority'}</div>
+                        </div>
+                        ${currentOrder.status === 'active' ? `
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <div class="progress-percentage">In Progress</div>
+                                <div class="progress-time">Started: ${formatTime(new Date(currentOrder.startTime))}</div>
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="card-content">
+                        ${currentOrder.specialInstructions ? `
+                        <div style="background: rgba(255, 193, 7, 0.1); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                            <h4 style="margin-bottom: 5px;">Special Instructions:</h4>
+                            <p>${currentOrder.specialInstructions}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${orderFilesHTML}
+                        
+                        <div style="text-align: center; margin-top: 30px;">
+                            ${currentOrder.status === 'pending' ? `
+                                <button class="btn btn-primary" style="font-size: 18px; padding: 15px 40px;" onclick="startOrder()">
+                                    Start Order
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary" style="font-size: 18px; padding: 15px 40px;" onclick="completeOrder()">
+                                    Complete Order
+                                </button>
+                                <button class="btn btn-secondary" style="margin-left: 15px;" onclick="reportIssue()">
+                                    Report Issue
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Display order backlog
+        function displayOrderBacklog() {
+            const backlogDiv = document.getElementById('orderBacklog');
+            const pendingOrders = workerOrders.filter(o => o.status === 'pending' && o.id !== currentOrder?.id);
+            
+            if (pendingOrders.length === 0) {
+                backlogDiv.innerHTML = '<p style="text-align: center; color: #86868b;">No pending orders</p>';
+                return;
+            }
+            
+            backlogDiv.innerHTML = pendingOrders.slice(0, 5).map(order => {
+                const dueDateTime = new Date(order.dueDate + ' ' + order.dueTime);
+                const isUrgent = order.priority === 'urgent' || dueDateTime < new Date();
+                
+                return `
+                    <div class="backlog-item ${isUrgent ? 'urgent' : ''}">
+                        <div class="backlog-header">
+                            <div>
+                                <div class="backlog-title">${order.orderNumber} - ${order.productName}</div>
+                                <div class="backlog-subtitle">${order.customerName ? `${order.customerName} • ` : ''}${order.color} • Size ${order.size}</div>
+                            </div>
+                            <div class="backlog-status ${isUrgent ? 'urgent' : 'queued'}">${isUrgent ? 'Urgent' : 'Queued'}</div>
+                        </div>
+                        <div class="backlog-meta">
+                            <span>Due: ${formatDateTime(dueDateTime)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Display week schedule
+        function displayWeekSchedule() {
+            const scheduleDiv = document.getElementById('weekSchedule');
+            const today = new Date();
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay() + 1); // Monday
+            
+            let calendarHTML = '<div class="calendar-grid">';
+            
+            // Headers
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            days.forEach(day => {
+                calendarHTML += `<div class="calendar-header">${day}</div>`;
+            });
+            
+            // Days
+            for (let i = 0; i < 7; i++) {
+                const currentDate = new Date(weekStart);
+                currentDate.setDate(weekStart.getDate() + i);
+                const dateStr = currentDate.toISOString().split('T')[0];
+                const isToday = dateStr === today.toISOString().split('T')[0];
+                const isWeekend = i >= 5;
+                
+                // Find orders for this day
+                const dayOrders = workerOrders.filter(o => o.dueDate === dateStr);
+                
+                calendarHTML += `
+                    <div class="calendar-day ${isToday ? 'today' : ''} ${isWeekend ? 'weekend' : ''}" 
+                         onclick="showDayDetails('${dateStr}', '${currentDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}')">
+                        <div class="day-number">${currentDate.getDate()}</div>
+                        <div class="day-orders">
+                            ${dayOrders.map(o => `
+                                <div class="order-chip ${o.status === 'completed' ? 'completed' : o.status === 'active' ? 'active' : 'due'}">
+                                    ${o.orderNumber}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            calendarHTML += '</div>';
+            scheduleDiv.innerHTML = calendarHTML;
+        }
+
+        // Show day details
+        function showDayDetails(dateStr, dateDisplay) {
+            const dayOrders = workerOrders.filter(o => o.dueDate === dateStr);
+            const modal = document.getElementById('dayDetailsModal');
+            const title = document.getElementById('dayDetailsTitle');
+            const content = document.getElementById('dayDetailsContent');
+            
+            title.textContent = dateDisplay;
+            
+            if (dayOrders.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #86868b; padding: 40px;">No orders scheduled for this day</p>';
+            } else {
+                content.innerHTML = dayOrders.map(order => {
+                    const statusIcon = order.status === 'completed' ? '✅' : order.status === 'active' ? '🔨' : '⏳';
+                    const statusClass = order.status === 'completed' ? 'status-completed' : 
+                                      order.status === 'active' ? 'status-active' : 'status-pending';
+                    
+                    return `
+                        <div class="day-order-item">
+                            <div class="day-order-header">
+                                <div>
+                                    <div class="day-order-title">${statusIcon} ${order.orderNumber} - ${order.productName}</div>
+                                    <div class="day-order-details">Customer: ${order.customerName || 'Not specified'}</div>
+                                    <div class="day-order-details">${order.color} • Size ${order.size} • Quantity: ${order.quantity}</div>
+                                    <div class="day-order-details">Due at: ${order.dueTime}</div>
+                                </div>
+                                <span class="status-badge ${statusClass}">${order.status}</span>
+                            </div>
+                            ${order.specialInstructions ? `
+                                <div style="margin-top: 10px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-radius: 8px;">
+                                    <strong>Special Instructions:</strong> ${order.specialInstructions}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            modal.classList.add('show');
+        }
+        
+        // Close day details
+        function closeDayDetails() {
+            document.getElementById('dayDetailsModal').classList.remove('show');
+        }
+
+        // Start order
+        async function startOrder() {
+            if (!currentOrder) return;
+            
+            showMessage('loading', 'Starting order...');
+            
+            try {
+                await db.collection('orders').doc(currentOrder.id).update({
+                    status: 'active',
+                    startTime: new Date().toISOString()
+                });
+                
+                // Log activity
+                await db.collection('activityLog').add({
+                    type: 'order_started',
+                    description: `Order ${currentOrder.orderNumber} started by ${currentSession.workerName}`,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showMessage('success', 'Order started!');
+                
+            } catch (error) {
+                console.error('Start order error:', error);
+                showMessage('error', 'Failed to start order. Please try again.');
+            }
+        }
+
+        // Complete order
+        function completeOrder() {
+            if (!currentOrder) return;
+            
+            // Show completion modal
+            document.getElementById('stageModal').classList.add('show');
+            
+            // Start stage timer
+            stageStartTime = new Date(currentOrder.startTime);
+            updateStageTimer();
+            stageTimer = setInterval(updateStageTimer, 1000);
+        }
+
+        // Handle photo upload
+        function handlePhotoUpload(event) {
+            selectedPhotoFile = event.target.files[0];
+            if (selectedPhotoFile) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const uploadArea = document.getElementById('photoUploadArea');
+                    uploadArea.innerHTML = `
+                        <img src="${e.target.result}" class="photo-preview">
+                        <div class="upload-text" style="color: #27ae60;">✓ Photo Uploaded</div>
+                    `;
+                    uploadArea.classList.add('has-photo');
+                };
+                reader.readAsDataURL(selectedPhotoFile);
+            }
+        }
+
+        // Show success animation in modal
+        function showSuccessInModal() {
+            const modalContent = document.getElementById('modalContent');
+            modalContent.innerHTML = `
+                <div class="modal-success">
+                    <div class="success-icon">✓</div>
+                    <h2 class="success-title">Order Completed!</h2>
+                    <p class="success-message-text">Great work! The order has been successfully completed and synced.</p>
+                    <button class="btn btn-primary" onclick="closeStageModal()">Continue</button>
+                </div>
+            `;
+            
+            // Auto-close after 3 seconds
+            setTimeout(() => {
+                closeStageModal();
+            }, 3000);
+        }
+
+        // Submit stage completion
+        async function submitStageComplete() {
+            if (!currentOrder) return;
+            
+            const submitBtn = document.getElementById('complete-order-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Completing...';
+            
+            // Store order info before updating
+            const orderNumber = currentOrder.orderNumber;
+            const workerName = currentSession.workerName;
+            
+            try {
+                // Get notes
+                const notes = document.getElementById('stageNotes').value;
+                
+                // Calculate duration
+                const start = new Date(currentOrder.startTime);
+                const end = new Date();
+                const duration = Math.round((end - start) / 1000 / 60); // minutes
+                
+                // Prepare update data
+                const updateData = {
+                    status: 'completed',
+                    completedTime: firebase.firestore.FieldValue.serverTimestamp(),
+                    completionNotes: notes,
+                    completionDuration: duration,
+                    location: 'factory'
+                };
+                
+                // Upload photo if taken
+                if (selectedPhotoFile) {
+                    submitBtn.textContent = 'Uploading photo...';
+                    const storageRef = storage.ref();
+                    const photoRef = storageRef.child(`completions/${Date.now()}_${selectedPhotoFile.name}`);
+                    const snapshot = await photoRef.put(selectedPhotoFile);
+                    const downloadUrl = await snapshot.ref.getDownloadURL();
+                    updateData.completionPhotoUrl = downloadUrl;
+                }
+                
+                submitBtn.textContent = 'Saving...';
+                
+                // Update order
+                await db.collection('orders').doc(currentOrder.id).update(updateData);
+                
+                // Log activity with stored values
+                await db.collection('activityLog').add({
+                    type: 'order_completed',
+                    description: `Order ${orderNumber} completed by ${workerName}`,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Show success message
+                showMessage('success', 'Order completed! Photo sent to manager.');
+                
+                // CLOSE THE MODAL SUCCESSFULLY
+                const modal = document.getElementById('stageModal');
+                if (modal) {
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                }
+                
+                // Clean up
+                if (stageTimer) {
+                    clearInterval(stageTimer);
+                    stageTimer = null;
+                }
+                selectedPhotoFile = null;
+                currentOrder = null;
+                
+            } catch (error) {
+                console.error('Complete order error:', error);
+                showMessage('error', 'Failed to complete order: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Complete Order';
+            }
+        }
+
+        // Update stage timer
+        function updateStageTimer() {
+            if (!stageStartTime) return;
+            
+            const now = new Date();
+            const elapsed = now - new Date(stageStartTime);
+            const hours = Math.floor(elapsed / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+            
+            document.getElementById('stageTimer').textContent = `${hours}h ${minutes}m`;
+        }
+
+        // Close modal
+        function closeStageModal() {
+            document.getElementById('stageModal').classList.remove('show');
+            if (stageTimer) {
+                clearInterval(stageTimer);
+                stageTimer = null;
+            }
+            selectedPhotoFile = null;
+        }
+
+        // Handle logout
+        async function handleLogout() {
+            try {
+                // Record clock out time
+                const timeTrackingQuery = await db.collection('timeTracking')
+                    .where('workerId', '==', currentSession.workerId)
+                    .where('date', '==', new Date().toISOString().split('T')[0])
+                    .orderBy('clockIn', 'desc')
+                    .limit(1)
+                    .get();
+                
+                if (!timeTrackingQuery.empty) {
+                    await timeTrackingQuery.docs[0].ref.update({
+                        clockOut: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                
+                // Log activity
+                await db.collection('activityLog').add({
+                    type: 'worker_logout',
+                    description: `${currentSession.workerName} clocked out`,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Clear session
+                sessionStorage.removeItem('currentWorkerSession');
+                
+                // Sign out from Firebase
+                await auth.signOut();
+                
+                // Redirect to login
+                window.location.href = 'login.html';
+                
+            } catch (error) {
+                console.error('Logout error:', error);
+                // Still redirect even if there's an error
+                sessionStorage.removeItem('currentWorkerSession');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Report issue
+        function reportIssue() {
+            alert('Issue reporting feature coming soon. Please contact your supervisor directly.');
+        }
+
+        // Format date/time helpers
+        function formatDateTime(date) {
+            return date.toLocaleString('en-GB', {
+                day: 'numeric',
+                month: 'short',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-GB', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Clean up listeners on page unload
+        window.addEventListener('beforeunload', () => {
+            unsubscribers.forEach(unsubscribe => unsubscribe());
+        });
+
+        // Initialize on load
+        window.onload = initDashboard;
+    </script>
+</body>
+</html>

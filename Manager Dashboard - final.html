@@ -1,0 +1,2838 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)file:///Users/joellewis/Desktop/manager%20random%20test.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard - Shoe Factory</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #1d1d1f;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #86868b;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f7;
+            color: #333;
+            margin-left: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background: #e5e5e7;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .order-list,
+        .worker-list {
+            margin-top: 30px;
+        }
+        
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .list-header h3 {
+            color: #333;
+        }
+        
+        .list-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .list-item:hover {
+            background: #f0f1f3;
+            transform: translateX(5px);
+        }
+        
+        .list-item.expandable {
+            cursor: pointer;
+        }
+        
+        .item-info h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .item-info p {
+            color: #86868b;
+            font-size: 14px;
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fef9e7;
+            color: #f39c12;
+        }
+        
+        .status-active {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+        
+        .status-completed {
+            background: #d6eaf8;
+            color: #2980b9;
+        }
+        
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .file-upload input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-upload-label {
+            display: block;
+            padding: 10px 15px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            text-align: center;
+            background: #f8f9ff;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-label:hover {
+            background: #eef0ff;
+            border-color: #764ba2;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .success-message {
+            background: #d5f4e6;
+            color: #27ae60;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error-message {
+            background: #fdedec;
+            color: #e74c3c;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading-message {
+            background: #cfe2ff;
+            color: #084298;
+            border: 1px solid #b6d4fe;
+        }
+        
+        #orderFileDisplay {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .file-item button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .file-item button:hover {
+            background: #c82333;
+        }
+
+        /* Live Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-change {
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Stat Card Expansion */
+        .stat-expansion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .stat-expansion.show {
+            display: flex;
+        }
+        
+        .stat-expansion-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlide 0.3s ease;
+        }
+        
+        @keyframes modalSlide {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stat-expansion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .stat-expansion-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .close-expansion {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #86868b;
+        }
+
+        /* Live Activity Feed */
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .activity-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .activity-icon.start {
+            background: #d5f4e6;
+        }
+        
+        .activity-icon.complete {
+            background: #d6eaf8;
+        }
+        
+        .activity-icon.login {
+            background: #fef9e7;
+        }
+        
+        .activity-details {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .activity-time {
+            font-size: 12px;
+            color: #86868b;
+        }
+
+        /* Order details expansion */
+        .order-completion-details {
+            margin: 15px 0 15px 60px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .order-completion-details img {
+            max-width: 300px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .order-completion-details h5 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .order-completion-details p {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+        
+        .firebase-config-warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ffeeba;
+            text-align: center;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Search bar */
+        .search-container {
+            margin-bottom: 30px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%23999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>') no-repeat 15px center;
+            padding-left: 50px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .search-results {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .search-results h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* In Progress Orders Section */
+        .in-progress-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .in-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        
+        .in-progress-header h3 {
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .in-progress-content {
+            display: none;
+        }
+        
+        .in-progress-content.expanded {
+            display: block;
+        }
+        
+        .expand-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        /* Reports Section Styles */
+        .report-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .report-card h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .report-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .report-stat {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .report-stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .report-stat-label {
+            color: #86868b;
+            font-size: 14px;
+        }
+        
+        .report-table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .report-table th,
+        .report-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .report-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .report-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .date-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .date-filter label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .date-filter input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Manager Dashboard</h1>
+            <p>Shoe Factory Management System</p>
+        </div>
+        
+        <div id="firebase-warning" class="firebase-config-warning" style="display: none;">
+            ⚠️ Firebase not configured! Please add your Firebase config.
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showSection(event, &#39;dashboard&#39;)">Live Dashboard</button>
+            <button class="tab" onclick="showSection(event, &#39;orders&#39;)">Manage Orders</button>
+            <button class="tab" onclick="showSection(event, &#39;cordwainers&#39;)">Manage Cordwainers</button>
+            <button class="tab" onclick="showSection(event, &#39;reports&#39;)">Reports</button>
+        </div>
+        
+        <div class="content">
+            <div id="success-message" class="message success-message"></div>
+            <div id="error-message" class="message error-message"></div>
+            <div id="loading-message" class="message loading-message"></div>
+            
+            <!-- Live Dashboard Section -->
+            <div id="dashboard-section" class="section active">
+                <h2>Live Production Overview</h2>
+                <p style="color: #86868b; margin-bottom: 20px;">Real-time updates from all workers</p>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" class="search-input" id="orderSearch" placeholder="Search orders by customer name, order number, or product..." onkeyup="searchOrders()">
+                    <div class="search-results" id="searchResults"></div>
+                </div>
+                
+                <div class="stats-grid" id="liveStats">
+                    <div class="stat-card" onclick="showStatDetails(&#39;today&#39;, [&quot;2VQzxobUiV9Q0qMdoR8K&quot;,&quot;QjC5fjcAuPZaUpMzOiUN&quot;,&quot;pHmRjranXVr8N63WmDn1&quot;])">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Today's Orders</div>
+                        <div class="stat-change">Due today</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);" onclick="showStatDetails(&#39;active&#39;, [])">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">In Progress</div>
+                        <div class="stat-change">Being worked on</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" onclick="showStatDetails(&#39;completed&#39;, [&quot;27da2AyfszcOv3C2rdwr&quot;,&quot;2VQzxobUiV9Q0qMdoR8K&quot;,&quot;FWBIpgrBfSQQ2fZkwYQ8&quot;,&quot;QjC5fjcAuPZaUpMzOiUN&quot;,&quot;VuN80BJBPX1HBUrrR6Wj&quot;,&quot;jErO8p5gOoj00XIJGVPr&quot;,&quot;pHmRjranXVr8N63WmDn1&quot;,&quot;ring7jCENt7vZOeYCjSc&quot;,&quot;vTJeBFbkwyzLKFVkdNQt&quot;])">
+                        <div class="stat-value">9</div>
+                        <div class="stat-label">Completed Today</div>
+                        <div class="stat-change">300% completion rate</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="showStatDetails(&#39;pending&#39;, [])">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Pending Orders</div>
+                        <div class="stat-change">Waiting to start</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" onclick="showStatDetails(&#39;backlog&#39;, [])">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Total Backlog</div>
+                        <div class="stat-change">All incomplete orders</div>
+                    </div>
+                </div>
+                
+                <!-- In Progress Orders Section -->
+                <div class="in-progress-section">
+                    <div class="in-progress-header" onclick="toggleInProgress()">
+                        <h3>
+                            <span class="expand-icon" id="inProgressExpandIcon">▼</span>
+                            Orders In Progress (<span id="inProgressCount">0</span>)
+                        </h3>
+                    </div>
+                    <div class="in-progress-content" id="inProgressContent"><p style="text-align: center; color: #86868b;">No orders currently in progress</p></div>
+                </div>
+                
+                <!-- Location Tracking Section -->
+                <div style="margin-top: 30px;">
+                    <h3 style="margin-bottom: 20px;">Order Locations</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);" onclick="showLocationOrders(&#39;factory&#39;)">
+                            <div class="stat-value" id="factoryCount">6</div>
+                            <div class="stat-label">At the Factory</div>
+                            <div class="stat-change">Ready for collection</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%);" onclick="showLocationOrders(&#39;store&#39;)">
+                            <div class="stat-value" id="storeCount">3</div>
+                            <div class="stat-label">At the Store</div>
+                            <div class="stat-change">Available for pickup</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);" onclick="showLocationOrders(&#39;transit&#39;)">
+                            <div class="stat-value" id="transitCount">2</div>
+                            <div class="stat-label">In Transit to Customer</div>
+                            <div class="stat-change">On the way</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+                    <div>
+                        <h3 style="margin-bottom: 20px;">Today's Progress</h3>
+                        <div id="todayProgress">
+                    <div class="list-item expandable" onclick="toggleOrderDetails(&#39;27da2AyfszcOv3C2rdwr&#39;)" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">✅</div>
+                            <div class="item-info">
+                                <h4>003432 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Derin D</p>
+                                <p>Assigned to: Unassigned • Due: 19 Jul 2025 12:21</p>
+                                <p style="font-size: 12px; color: #27ae60;">Completed at: 12:20</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-completed">completed</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-27da2AyfszcOv3C2rdwr" class="order-completion-details">
+                        
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="./Manager Dashboard - Shoe Factory_files/1752319246587_1_ee48cbf5-023e-415a-9e30-2c1e5c75116d.jpg" onclick="viewFullImage(&#39;https://firebasestorage.googleapis.com/v0/b/shoe-factory-cfa28.firebasestorage.app/o/completions%2F1752319246587_1_ee48cbf5-023e-415a-9e30-2c1e5c75116d.jpg?alt=media&amp;token=47df3231-5064-4d3c-98c9-f83f5ddd24f5&#39;)" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        
+                        
+                        
+                            <p style="margin-top: 15px; font-size: 14px; color: #86868b;">
+                                Time taken: 0h 1m
+                            </p>
+                        
+                    </div>
+                
+                    <div class="list-item expandable" onclick="toggleOrderDetails(&#39;2VQzxobUiV9Q0qMdoR8K&#39;)" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">✅</div>
+                            <div class="item-info">
+                                <h4>00343943 - caledonian</h4>
+                                <p><strong>Customer:</strong> Derin D</p>
+                                <p>Assigned to: Unassigned • Due: 12 Jul 2025 19:07</p>
+                                <p style="font-size: 12px; color: #27ae60;">Completed at: 16:09</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-completed">completed</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-2VQzxobUiV9Q0qMdoR8K" class="order-completion-details" style="display: none;">
+                        
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="./Manager Dashboard - Shoe Factory_files/1752332939327_1_ee48cbf5-023e-415a-9e30-2c1e5c75116d.jpg" onclick="viewFullImage(&#39;https://firebasestorage.googleapis.com/v0/b/shoe-factory-cfa28.firebasestorage.app/o/completions%2F1752332939327_1_ee48cbf5-023e-415a-9e30-2c1e5c75116d.jpg?alt=media&amp;token=a812740d-2c85-487c-bc13-ac895b0a3095&#39;)" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        
+                        
+                        
+                    </div>
+                
+                    <div class="list-item expandable" onclick="toggleOrderDetails(&#39;FWBIpgrBfSQQ2fZkwYQ8&#39;)" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">✅</div>
+                            <div class="item-info">
+                                <h4>0034392 - caledonian</h4>
+                                <p><strong>Customer:</strong> Joel lewis</p>
+                                <p>Assigned to: Unassigned • Due: 25 Jul 2025 16:34</p>
+                                <p style="font-size: 12px; color: #27ae60;">Completed at: 16:30</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-completed">completed</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-FWBIpgrBfSQQ2fZkwYQ8" class="order-completion-details">
+                        
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="./Manager Dashboard - Shoe Factory_files/1752334206248_Screenshot 2025-07-11 at 12.14.27.png" onclick="viewFullImage(&#39;https://firebasestorage.googleapis.com/v0/b/shoe-factory-cfa28.firebasestorage.app/o/completions%2F1752334206248_Screenshot%202025-07-11%20at%2012.14.27.png?alt=media&amp;token=d7d4bec8-755f-4c13-b207-52f3ea5d96f1&#39;)" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        
+                        
+                        
+                            <p style="margin-top: 15px; font-size: 14px; color: #86868b;">
+                                Time taken: 0h 1m
+                            </p>
+                        
+                    </div>
+                
+                    <div class="list-item expandable" onclick="toggleOrderDetails(&#39;QjC5fjcAuPZaUpMzOiUN&#39;)" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">✅</div>
+                            <div class="item-info">
+                                <h4>003333 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Derin D</p>
+                                <p>Assigned to: Unassigned • Due: 12 Jul 2025 16:26</p>
+                                <p style="font-size: 12px; color: #27ae60;">Completed at: 16:27</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-completed">completed</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-QjC5fjcAuPZaUpMzOiUN" class="order-completion-details">
+                        
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="./Manager Dashboard - Shoe Factory_files/1752334056957_Screenshot 2025-07-11 at 12.14.27.png" onclick="viewFullImage(&#39;https://firebasestorage.googleapis.com/v0/b/shoe-factory-cfa28.firebasestorage.app/o/completions%2F1752334056957_Screenshot%202025-07-11%20at%2012.14.27.png?alt=media&amp;token=652c78b7-04c6-4e6b-8c1c-1db43ddcbaea&#39;)" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        
+                        
+                        
+                    </div>
+                
+                    <div class="list-item expandable" onclick="toggleOrderDetails(&#39;VuN80BJBPX1HBUrrR6Wj&#39;)" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">✅</div>
+                            <div class="item-info">
+                                <h4>1234 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Derin D</p>
+                                <p>Assigned to: Unassigned • Due: 13 Jul 2025 21:32</p>
+                                <p style="font-size: 12px; color: #27ae60;">Completed at: 16:34</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-completed">completed</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-VuN80BJBPX1HBUrrR6Wj" class="order-completion-details">
+                        
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="./Manager Dashboard - Shoe Factory_files/1752334442542_Screenshot 2025-07-11 at 12.14.23.png" onclick="viewFullImage(&#39;https://firebasestorage.googleapis.com/v0/b/shoe-factory-cfa28.firebasestorage.app/o/completions%2F1752334442542_Screenshot%202025-07-11%20at%2012.14.23.png?alt=media&amp;token=d890a559-9b16-44bc-a1f0-6732f4b355fc&#39;)" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        
+                        
+                        
+                            <p style="margin-top: 15px; font-size: 14px; color: #86868b;">
+                                Time taken: 0h 1m
+                            </p>
+                        
+                    </div>
+                
+                    <div class="list-item expandable" onclick="toggleOrderDetails(&#39;jErO8p5gOoj00XIJGVPr&#39;)" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">✅</div>
+                            <div class="item-info">
+                                <h4>00343912 - caledonian</h4>
+                                <p><strong>Customer:</strong> Joel lewis</p>
+                                <p>Assigned to: Unassigned • Due: 13 Jul 2025 19:07</p>
+                                <p style="font-size: 12px; color: #27ae60;">Completed at: 16:21</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-completed">completed</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-jErO8p5gOoj00XIJGVPr" class="order-completion-details">
+                        
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="./Manager Dashboard - Shoe Factory_files/1752333697271_1_ee48cbf5-023e-415a-9e30-2c1e5c75116d.jpg" onclick="viewFullImage(&#39;https://firebasestorage.googleapis.com/v0/b/shoe-factory-cfa28.firebasestorage.app/o/completions%2F1752333697271_1_ee48cbf5-023e-415a-9e30-2c1e5c75116d.jpg?alt=media&amp;token=e9db55b5-69c8-4f6f-96e4-5cce0cefc862&#39;)" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        
+                        
+                        
+                            <p style="margin-top: 15px; font-size: 14px; color: #86868b;">
+                                Time taken: 0h 13m
+                            </p>
+                        
+                    </div>
+                
+                    <div class="list-item expandable" onclick="toggleOrderDetails(&#39;pHmRjranXVr8N63WmDn1&#39;)" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">✅</div>
+                            <div class="item-info">
+                                <h4>0001 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Not specified</p>
+                                <p>Assigned to: Unassigned • Due: 12 Jul 2025 16:45</p>
+                                <p style="font-size: 12px; color: #27ae60;">Completed at: 11:43</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-completed">completed</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-pHmRjranXVr8N63WmDn1" class="order-completion-details">
+                        
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="./Manager Dashboard - Shoe Factory_files/1752317021757_1_ee48cbf5-023e-415a-9e30-2c1e5c75116d.jpg" onclick="viewFullImage(&#39;https://firebasestorage.googleapis.com/v0/b/shoe-factory-cfa28.firebasestorage.app/o/completions%2F1752317021757_1_ee48cbf5-023e-415a-9e30-2c1e5c75116d.jpg?alt=media&amp;token=21629307-ed15-47ee-b90e-418011554b7e&#39;)" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        
+                        
+                        
+                            <p style="margin-top: 15px; font-size: 14px; color: #86868b;">
+                                Time taken: 0h 2m
+                            </p>
+                        
+                    </div>
+                
+                    <div class="list-item expandable" onclick="toggleOrderDetails(&#39;ring7jCENt7vZOeYCjSc&#39;)" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">✅</div>
+                            <div class="item-info">
+                                <h4>0022 - caledonian</h4>
+                                <p><strong>Customer:</strong> Joel lewis</p>
+                                <p>Assigned to: Unassigned • Due: 16 Jul 2025 16:57</p>
+                                <p style="font-size: 12px; color: #27ae60;">Completed at: 16:54</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-completed">completed</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-ring7jCENt7vZOeYCjSc" class="order-completion-details">
+                        
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="./Manager Dashboard - Shoe Factory_files/1752335651816_Screenshot 2025-07-11 at 11.12.32.png" onclick="viewFullImage(&#39;https://firebasestorage.googleapis.com/v0/b/shoe-factory-cfa28.firebasestorage.app/o/completions%2F1752335651816_Screenshot%202025-07-11%20at%2011.12.32.png?alt=media&amp;token=24263ce6-9b96-46ab-9659-f2de0cab8d38&#39;)" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        
+                        
+                        
+                    </div>
+                
+                    <div class="list-item expandable" onclick="toggleOrderDetails(&#39;vTJeBFbkwyzLKFVkdNQt&#39;)" style="cursor: pointer;">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">✅</div>
+                            <div class="item-info">
+                                <h4>003439 - erf</h4>
+                                <p><strong>Customer:</strong> Joel lewis</p>
+                                <p>Assigned to: Unassigned • Due: 27 Jul 2025 22:45</p>
+                                <p style="font-size: 12px; color: #27ae60;">Completed at: 16:43</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-completed">completed</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-vTJeBFbkwyzLKFVkdNQt" class="order-completion-details">
+                        
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="./Manager Dashboard - Shoe Factory_files/1752335012504_Screenshot 2025-07-11 at 12.14.23.png" onclick="viewFullImage(&#39;https://firebasestorage.googleapis.com/v0/b/shoe-factory-cfa28.firebasestorage.app/o/completions%2F1752335012504_Screenshot%202025-07-11%20at%2012.14.23.png?alt=media&amp;token=05b67757-b3e4-4cbf-ad78-ff20216b76f3&#39;)" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        
+                        
+                        
+                    </div>
+                </div>
+                    </div>
+                    
+                    <div>
+                        <h3 style="margin-bottom: 20px;">Recent Activity</h3>
+                        <div class="activity-feed" id="activityFeed">
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 003333 moved to Transit to Customer</div>
+                            <div class="activity-time">16:56</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 003409 moved to Store</div>
+                            <div class="activity-time">16:56</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 00343943 moved to Store</div>
+                            <div class="activity-time">16:56</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">🔨</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 0022 started by chris</div>
+                            <div class="activity-time">16:54</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">New order 0022 for Joel lewis assigned to chris</div>
+                            <div class="activity-time">16:53</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 0034392 moved to Transit to Customer</div>
+                            <div class="activity-time">16:52</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 003432 moved to Store</div>
+                            <div class="activity-time">16:52</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">🔨</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 003439 started by chris</div>
+                            <div class="activity-time">16:43</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">New order 003439 for Joel lewis assigned to chris</div>
+                            <div class="activity-time">16:43</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">🔨</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 1234 started by chris</div>
+                            <div class="activity-time">16:33</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">New order 1234 for Derin D assigned to chris</div>
+                            <div class="activity-time">16:32</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">🔨</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 0034392 started by chris</div>
+                            <div class="activity-time">16:29</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">New order 0034392 for Joel lewis assigned to chris</div>
+                            <div class="activity-time">16:29</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon login">👤</div>
+                        <div class="activity-details">
+                            <div class="activity-title">chris clocked in</div>
+                            <div class="activity-time">16:28</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">🔨</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 003333 started by chris</div>
+                            <div class="activity-time">16:27</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon login">👤</div>
+                        <div class="activity-details">
+                            <div class="activity-title">chris clocked in</div>
+                            <div class="activity-time">16:27</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">📋</div>
+                        <div class="activity-details">
+                            <div class="activity-title">New order 003333 for Derin D assigned to chris</div>
+                            <div class="activity-time">16:24</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon login">👤</div>
+                        <div class="activity-details">
+                            <div class="activity-title">chris clocked in</div>
+                            <div class="activity-time">16:21</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon start">🔨</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 00343912 started by chris</div>
+                            <div class="activity-time">16:09</div>
+                        </div>
+                    </div>
+                
+                    <div class="activity-item">
+                        <div class="activity-icon complete">✅</div>
+                        <div class="activity-details">
+                            <div class="activity-title">Order 00343912 completed by chris</div>
+                            <div class="activity-time">16:09</div>
+                        </div>
+                    </div>
+                </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Orders Section -->
+            <div id="orders-section" class="section">
+                <h2>Create New Order</h2>
+                
+                <form id="order-form" onsubmit="handleOrderSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Order Number</label>
+                            <input type="text" id="orderNumber" required="" placeholder="e.g., #4524">
+                        </div>
+                        <div class="form-group">
+                            <label>Customer Name</label>
+                            <input type="text" id="customerName" required="" placeholder="e.g., John Smith">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Product Name</label>
+                            <input type="text" id="productName" required="" placeholder="e.g., Oxford Dress Shoes">
+                        </div>
+                        <div class="form-group">
+                            <label>Product Type</label>
+                            <select id="productType" required="">
+                                <option value="">Select Type</option>
+                                <option value="kilim-albert-slipper">Kilim Albert Slipper</option>
+                                <option value="opera-pump">Opera Pump</option>
+                                <option value="belgian-loafer">Belgian Loafer</option>
+                                <option value="albert-slipper">Albert Slipper</option>
+                                <option value="engadin-boot">Engadin Boot</option>
+                                <option value="house-slipper">House Slipper</option>
+                                <option value="diego-boot">Diego Boot</option>
+                                <option value="charles-loafer">Charles Loafer</option>
+                                <option value="castro-loafer">Castro Loafer</option>
+                                <option value="caledonian-loafer">Caledonian Loafer</option>
+                                <option value="runner-sneaker">Runner Sneaker</option>
+                                <option value="raf-sneaker">Raf Sneaker</option>
+                                <option value="pintuck-loafer">Pintuck Loafer</option>
+                                <option value="penny-loafer-mule">Penny Loafer Mule</option>
+                                <option value="penny-loafer">Penny Loafer</option>
+                                <option value="pablo">Pablo</option>
+                                <option value="luigi-mule">Luigi Mule</option>
+                                <option value="kilim-house-slipper">Kilim House Slipper</option>
+                                <option value="letterbox-loafer">Letterbox Loafer</option>
+                                <option value="tassel-loafer">Tassel Loafer</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Size</label>
+                            <input type="text" id="size" required="" placeholder="e.g., 42 EU">
+                        </div>
+                        <div class="form-group">
+                            <label>Color</label>
+                            <input type="text" id="color" required="" placeholder="e.g., Black">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Quantity</label>
+                            <input type="number" id="quantity" required="" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Priority</label>
+                            <select id="priority" required="">
+                                <option value="normal">Normal</option>
+                                <option value="high">High Priority</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Due Date</label>
+                            <input type="date" id="dueDate" required="">
+                        </div>
+                        <div class="form-group">
+                            <label>Due Time</label>
+                            <input type="time" id="dueTime" required="">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Assign to Cordwainer</label>
+                        <select id="assignedWorker" required=""><option value="">Select Cordwainer</option><option value="IumWm6FUXPQMhkpSVp9d">Hanane - 2</option><option value="doqVbrrwEsv92yrPG4mL">chris - 5</option></select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Special Instructions</label>
+                        <textarea id="specialInstructions" placeholder="Any special requirements or notes..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Upload Order Forms (PDF/Images)</label>
+                        <div class="file-upload">
+                            <input type="file" id="orderFile" accept=".pdf,.jpg,.jpeg,.png" multiple="" onchange="handleFileSelect(event)">
+                            <label for="orderFile" class="file-upload-label">
+                                Click to upload order form documents (multiple files allowed)
+                            </label>
+                        </div>
+                        <div id="orderFileDisplay"></div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="create-order-btn">Create Order</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear Form</button>
+                </form>
+                
+                <div class="order-list">
+                    <div class="list-header">
+                        <h3>Current Orders</h3>
+                    </div>
+                    <div id="orders-list">
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>003333 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Derin D</p>
+                                <p>black • Size 11 • Due: 12 Jul 2025 at 16:26</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;QjC5fjcAuPZaUpMzOiUN&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>0001 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Not specified</p>
+                                <p>black suede 102 • Size 10 • Due: 12 Jul 2025 at 16:45</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;pHmRjranXVr8N63WmDn1&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>00343943 - caledonian</h4>
+                                <p><strong>Customer:</strong> Derin D</p>
+                                <p>red • Size 11 • Due: 12 Jul 2025 at 19:07</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;2VQzxobUiV9Q0qMdoR8K&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>00343912 - caledonian</h4>
+                                <p><strong>Customer:</strong> Joel lewis</p>
+                                <p>red • Size 11 • Due: 13 Jul 2025 at 19:07</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;jErO8p5gOoj00XIJGVPr&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>1234 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Derin D</p>
+                                <p>black • Size 10 • Due: 13 Jul 2025 at 21:32</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;VuN80BJBPX1HBUrrR6Wj&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>0022 - caledonian</h4>
+                                <p><strong>Customer:</strong> Joel lewis</p>
+                                <p>black • Size 10 • Due: 16 Jul 2025 at 16:57</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;ring7jCENt7vZOeYCjSc&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>003457 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Not specified</p>
+                                <p>black • Size 11 • Due: 17 Jul 2025 at 16:17</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;vt658AScBRGJ9IhlK1fj&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>003409 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Not specified</p>
+                                <p>black • Size 11 • Due: 18 Jul 2025 at 16:07</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;8WpjiWgpAZ147mZsDzJi&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>003432 - Caledonian</h4>
+                                <p><strong>Customer:</strong> Derin D</p>
+                                <p>black suede 102 • Size 10 • Due: 19 Jul 2025 at 12:21</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;27da2AyfszcOv3C2rdwr&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>0034392 - caledonian</h4>
+                                <p><strong>Customer:</strong> Joel lewis</p>
+                                <p>red • Size 13 • Due: 25 Jul 2025 at 16:34</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;FWBIpgrBfSQQ2fZkwYQ8&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>003439 - erf</h4>
+                                <p><strong>Customer:</strong> Joel lewis</p>
+                                <p>fre • Size 11 • Due: 27 Jul 2025 at 22:45</p>
+                                <p>Assigned to: Unassigned</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge status-completed">completed</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder(&#39;vTJeBFbkwyzLKFVkdNQt&#39;)">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Cordwainers Section -->
+            <div id="cordwainers-section" class="section">
+                <h2>Add New Cordwainer</h2>
+                
+                <form id="worker-form" onsubmit="handleWorkerSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" id="workerUsername" required="" placeholder="e.g., john.smith">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="workerPassword" required="" placeholder="Create a password">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="workerFullName" required="" placeholder="e.g., John Smith">
+                        </div>
+                        <div class="form-group">
+                            <label>Station</label>
+                            <input type="text" id="workerStation" required="" placeholder="e.g., Stitching Station 3">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="add-worker-btn">Add Cordwainer</button>
+                </form>
+                
+                <div class="worker-list">
+                    <div class="list-header">
+                        <h3>Current Cordwainers</h3>
+                    </div>
+                    <div id="workers-list">
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>Hanane</h4>
+                                <p>Username: Hanane1 • Station: 2</p>
+                                <p style="margin-top: 5px; font-size: 13px;">Orders: 0 active, 0 pending, 0 completed</p>
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn btn-danger btn-small" onclick="deleteWorker(&#39;IumWm6FUXPQMhkpSVp9d&#39;)">Remove</button>
+                            </div>
+                        </div>
+                    
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>chris</h4>
+                                <p>Username: chris • Station: 5</p>
+                                <p style="margin-top: 5px; font-size: 13px;">Orders: 0 active, 0 pending, 9 completed</p>
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn btn-danger btn-small" onclick="deleteWorker(&#39;doqVbrrwEsv92yrPG4mL&#39;)">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reports Section -->
+            <div id="reports-section" class="section">
+                <h2>Production Reports</h2>
+                
+                <div class="date-filter">
+                    <label>From:</label>
+                    <input type="date" id="reportStartDate" onchange="updateReports()">
+                    <label>To:</label>
+                    <input type="date" id="reportEndDate" onchange="updateReports()">
+                    <button class="btn btn-primary btn-small" onclick="setDateRange(&#39;today&#39;)">Today</button>
+                    <button class="btn btn-primary btn-small" onclick="setDateRange(&#39;week&#39;)">This Week</button>
+                    <button class="btn btn-primary btn-small" onclick="setDateRange(&#39;month&#39;)">This Month</button>
+                </div>
+                
+                <div id="reports-content">
+                    <div class="report-card">
+                        <h3>Overview (5 Jul 2025 - 12 Jul 2025)</h3>
+                        <div class="report-stats">
+                            <div class="report-stat">
+                                <div class="report-stat-value">3</div>
+                                <div class="report-stat-label">Total Orders</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="report-stat-value">3</div>
+                                <div class="report-stat-label">Completed</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="report-stat-value">3</div>
+                                <div class="report-stat-label">Total Pairs</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="report-stat-value">1m</div>
+                                <div class="report-stat-label">Avg. Time</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="report-stat-value">100%</div>
+                                <div class="report-stat-label">Completion Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="report-card">
+                        <h3>Cordwainer Performance</h3>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Cordwainer</th>
+                                    <th>Total Orders</th>
+                                    <th>Completed</th>
+                                    <th>In Progress</th>
+                                    <th>Pending</th>
+                                    <th>Avg. Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                    <tr>
+                                        <td>chris</td>
+                                        <td>3</td>
+                                        <td>3</td>
+                                        <td>0</td>
+                                        <td>0</td>
+                                        <td>1m</td>
+                                    </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="report-card">
+                        <h3>Product Type Analysis</h3>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Product Type</th>
+                                    <th>Total Orders</th>
+                                    <th>Completed</th>
+                                    <th>Completion Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                    <tr>
+                                        <td>Albert Slipper</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>100%</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td>Engadin Boot</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>100%</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td>Dress</td>
+                                        <td>1</td>
+                                        <td>1</td>
+                                        <td>100%</td>
+                                    </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat Expansion Modal -->
+    <div class="stat-expansion" id="statExpansion">
+        <div class="stat-expansion-content">
+            <div class="stat-expansion-header">
+                <h2 class="stat-expansion-title" id="expansionTitle">Title</h2>
+                <button class="close-expansion" onclick="closeStatExpansion()">×</button>
+            </div>
+            <div id="expansionContent"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="./Manager Dashboard - Shoe Factory_files/firebase-app-compat.js"></script>
+    <script src="./Manager Dashboard - Shoe Factory_files/firebase-auth-compat.js"></script>
+    <script src="./Manager Dashboard - Shoe Factory_files/firebase-firestore-compat.js"></script>
+    <script src="./Manager Dashboard - Shoe Factory_files/firebase-storage-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBCFyrBCfanQx__vgiqXxE19Laoivv3NLI",
+            authDomain: "shoe-factory-cfa28.firebaseapp.com",
+            projectId: "shoe-factory-cfa28",
+            storageBucket: "shoe-factory-cfa28.firebasestorage.app",
+            messagingSenderId: "81180885550",
+            appId: "1:81180885550:web:0477e17d4dc6ac748d95bf",
+            measurementId: "G-1CTV8RFXLR"
+        };
+
+        // Initialize Firebase
+        let db, auth, storage;
+        let unsubscribers = [];
+        let selectedFiles = [];
+        let allOrders = [];
+        let allWorkers = {};
+        
+        try {
+            if (firebaseConfig.apiKey) {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                auth = firebase.auth();
+                storage = firebase.storage();
+                
+                // Sign in anonymously
+                auth.signInAnonymously().then(() => {
+                    initializeSystem();
+                    // Set default date range for reports
+                    setDateRange('week');
+                }).catch(error => {
+                    console.error('Auth error:', error);
+                    showMessage('error', 'Authentication failed. Please refresh the page.');
+                });
+            } else {
+                document.getElementById('firebase-warning').style.display = 'block';
+                document.querySelectorAll('button[type="submit"]').forEach(btn => {
+                    btn.disabled = true;
+                });
+            }
+        } catch (error) {
+            console.error('Firebase initialization error:', error);
+            document.getElementById('firebase-warning').style.display = 'block';
+        }
+        
+        // Show message
+        function showMessage(type, text) {
+            document.querySelectorAll('.message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+            
+            const messageEl = document.getElementById(type + '-message');
+            if (messageEl) {
+                messageEl.textContent = text;
+                messageEl.style.display = 'block';
+                
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Initialize the system
+        function initializeSystem() {
+            // Set up real-time listeners
+            setupRealtimeListeners();
+            
+            // Load initial data
+            loadWorkersDropdown();
+            updateLiveDashboard();
+        }
+        
+        // Set up real-time listeners
+        function setupRealtimeListeners() {
+            // Listen to orders
+            const ordersListener = db.collection('orders')
+                .onSnapshot(snapshot => {
+                    // Store all orders for search
+                    allOrders = [];
+                    snapshot.forEach(doc => {
+                        allOrders.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    
+                    refreshOrders();
+                    updateLiveDashboard();
+                    updateInProgressOrders();
+                }, error => {
+                    console.error('Orders listener error:', error);
+                });
+            unsubscribers.push(ordersListener);
+            
+            // Listen to workers
+            const workersListener = db.collection('workers')
+                .onSnapshot(snapshot => {
+                    allWorkers = {};
+                    snapshot.forEach(doc => {
+                        allWorkers[doc.id] = doc.data();
+                    });
+                    refreshWorkers();
+                    loadWorkersDropdown();
+                }, error => {
+                    console.error('Workers listener error:', error);
+                });
+            unsubscribers.push(workersListener);
+            
+            // Listen to activity log
+            const activityListener = db.collection('activityLog')
+                .orderBy('timestamp', 'desc')
+                .limit(20)
+                .onSnapshot(snapshot => {
+                    updateActivityFeed(snapshot);
+                }, error => {
+                    console.error('Activity listener error:', error);
+                });
+            unsubscribers.push(activityListener);
+        }
+        
+        // Tab switching
+        function showSection(event, section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            // Handle the cordwainers section name change
+            const sectionId = section === 'cordwainers' ? 'cordwainers-section' : section + '-section';
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (section === 'reports') {
+                updateReports();
+            }
+        }
+        
+        // Search orders
+        function searchOrders() {
+            const searchTerm = document.getElementById('orderSearch').value.toLowerCase().trim();
+            const searchResultsDiv = document.getElementById('searchResults');
+            
+            if (searchTerm === '') {
+                searchResultsDiv.style.display = 'none';
+                return;
+            }
+            
+            const filteredOrders = allOrders.filter(order => {
+                return (
+                    (order.customerName && order.customerName.toLowerCase().includes(searchTerm)) ||
+                    order.orderNumber.toLowerCase().includes(searchTerm) ||
+                    order.productName.toLowerCase().includes(searchTerm) ||
+                    (order.productType && order.productType.toLowerCase().includes(searchTerm))
+                );
+            });
+            
+            if (filteredOrders.length === 0) {
+                searchResultsDiv.innerHTML = '<p style="text-align: center; color: #86868b;">No orders found</p>';
+                searchResultsDiv.style.display = 'block';
+                return;
+            }
+            
+            searchResultsDiv.innerHTML = `
+                <h3>Search Results (${filteredOrders.length} found)</h3>
+                ${filteredOrders.map(order => {
+                    const worker = allWorkers[order.assignedWorker];
+                    let statusIcon = '⏳';
+                    let statusColor = 'status-pending';
+                    if (order.status === 'active') {
+                        statusIcon = '🔨';
+                        statusColor = 'status-active';
+                    } else if (order.status === 'completed') {
+                        statusIcon = '✅';
+                        statusColor = 'status-completed';
+                    }
+                    
+                    return `
+                        <div class="list-item">
+                            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                                <div style="font-size: 24px;">${statusIcon}</div>
+                                <div class="item-info">
+                                    <h4>${order.orderNumber} - ${order.productName}</h4>
+                                    <p><strong>Customer:</strong> ${order.customerName || 'Not specified'}</p>
+                                    <p>Assigned to: ${worker ? worker.fullName : 'Unassigned'} • Due: ${formatDate(order.dueDate)} ${order.dueTime}</p>
+                                </div>
+                            </div>
+                            <span class="status-badge ${statusColor}">${order.status}</span>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+            searchResultsDiv.style.display = 'block';
+        }
+        
+        // Toggle in-progress orders
+        function toggleInProgress() {
+            const content = document.getElementById('inProgressContent');
+            const icon = document.getElementById('inProgressExpandIcon');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                icon.classList.remove('rotated');
+            } else {
+                content.classList.add('expanded');
+                icon.classList.add('rotated');
+            }
+        }
+        
+        // Update in-progress orders
+        function updateInProgressOrders() {
+            const activeOrders = allOrders.filter(o => o.status === 'active');
+            document.getElementById('inProgressCount').textContent = activeOrders.length;
+            
+            const contentDiv = document.getElementById('inProgressContent');
+            
+            if (activeOrders.length === 0) {
+                contentDiv.innerHTML = '<p style="text-align: center; color: #86868b;">No orders currently in progress</p>';
+                return;
+            }
+            
+            contentDiv.innerHTML = activeOrders.map(order => {
+                const worker = allWorkers[order.assignedWorker];
+                const startTime = order.startTime ? new Date(order.startTime) : new Date();
+                const elapsed = new Date() - startTime;
+                const elapsedHours = Math.floor(elapsed / (1000 * 60 * 60));
+                const elapsedMinutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+                
+                return `
+                    <div class="list-item expandable" onclick="toggleOrderDetails('active-${order.id}')">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">🔨</div>
+                            <div class="item-info">
+                                <h4>${order.orderNumber} - ${order.productName}</h4>
+                                <p><strong>Customer:</strong> ${order.customerName || 'Not specified'}</p>
+                                <p>Worker: ${worker ? worker.fullName : 'Unassigned'} • Started: ${formatTime(startTime)}</p>
+                                <p style="color: #667eea;">Time elapsed: ${elapsedHours}h ${elapsedMinutes}m</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge status-active">IN PROGRESS</span>
+                            <span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>
+                        </div>
+                    </div>
+                    <div id="order-details-active-${order.id}" class="order-completion-details">
+                        <p><strong>Color:</strong> ${order.color} • <strong>Size:</strong> ${order.size} • <strong>Quantity:</strong> ${order.quantity}</p>
+                        <p><strong>Due:</strong> ${formatDate(order.dueDate)} at ${order.dueTime}</p>
+                        ${order.specialInstructions ? `<p><strong>Special Instructions:</strong> ${order.specialInstructions}</p>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update live dashboard
+        async function updateLiveDashboard() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                
+                // Calculate stats
+                const todayOrders = allOrders.filter(o => o.dueDate === today);
+                const activeOrders = allOrders.filter(o => o.status === 'active');
+                const completedToday = allOrders.filter(o => 
+                    o.status === 'completed' && 
+                    o.completedTime && 
+                    o.completedTime.toDate().toISOString().split('T')[0] === today
+                );
+                const pendingOrders = allOrders.filter(o => o.status === 'pending');
+                const totalBacklog = allOrders.filter(o => o.status !== 'completed');
+                
+                // Calculate location stats for completed orders
+                const completedOrders = allOrders.filter(o => o.status === 'completed');
+                const factoryOrders = completedOrders.filter(o => !o.location || o.location === 'factory');
+                const storeOrders = completedOrders.filter(o => o.location === 'store');
+                const transitOrders = completedOrders.filter(o => o.location === 'transit');
+                
+                // Update location counts
+                document.getElementById('factoryCount').textContent = factoryOrders.length;
+                document.getElementById('storeCount').textContent = storeOrders.length;
+                document.getElementById('transitCount').textContent = transitOrders.length;
+                
+                // Update stats display with click handlers
+                document.getElementById('liveStats').innerHTML = `
+                    <div class="stat-card" onclick="showStatDetails('today', ${JSON.stringify(todayOrders.map(o => o.id)).replace(/"/g, '&quot;')})">
+                        <div class="stat-value">${todayOrders.length}</div>
+                        <div class="stat-label">Today's Orders</div>
+                        <div class="stat-change">Due today</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);" onclick="showStatDetails('active', ${JSON.stringify(activeOrders.map(o => o.id)).replace(/"/g, '&quot;')})">
+                        <div class="stat-value">${activeOrders.length}</div>
+                        <div class="stat-label">In Progress</div>
+                        <div class="stat-change">Being worked on</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);" onclick="showStatDetails('completed', ${JSON.stringify(completedToday.map(o => o.id)).replace(/"/g, '&quot;')})">
+                        <div class="stat-value">${completedToday.length}</div>
+                        <div class="stat-label">Completed Today</div>
+                        <div class="stat-change">${todayOrders.length > 0 ? Math.round((completedToday.length / todayOrders.length) * 100) : 0}% completion rate</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);" onclick="showStatDetails('pending', ${JSON.stringify(pendingOrders.map(o => o.id)).replace(/"/g, '&quot;')})">
+                        <div class="stat-value">${pendingOrders.length}</div>
+                        <div class="stat-label">Pending Orders</div>
+                        <div class="stat-change">Waiting to start</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);" onclick="showStatDetails('backlog', ${JSON.stringify(totalBacklog.map(o => o.id)).replace(/"/g, '&quot;')})">
+                        <div class="stat-value">${totalBacklog.length}</div>
+                        <div class="stat-label">Total Backlog</div>
+                        <div class="stat-change">All incomplete orders</div>
+                    </div>
+                `;
+                
+                // Update today's progress
+                updateTodayProgress(allOrders, today);
+                
+            } catch (error) {
+                console.error('Dashboard update error:', error);
+            }
+        }
+        
+        // Show stat details
+        function showStatDetails(type, orderIds) {
+            const modal = document.getElementById('statExpansion');
+            const title = document.getElementById('expansionTitle');
+            const content = document.getElementById('expansionContent');
+            
+            // Parse order IDs if it's a string
+            if (typeof orderIds === 'string') {
+                orderIds = JSON.parse(orderIds);
+            }
+            
+            // Filter orders based on IDs
+            const filteredOrders = allOrders.filter(o => orderIds.includes(o.id));
+            
+            // Set title based on type
+            const titles = {
+                'today': "Today's Orders",
+                'active': 'Orders In Progress',
+                'completed': 'Completed Today',
+                'pending': 'Pending Orders',
+                'backlog': 'Total Backlog'
+            };
+            
+            title.textContent = titles[type] || 'Orders';
+            
+            if (filteredOrders.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #86868b; padding: 40px;">No orders in this category</p>';
+            } else {
+                content.innerHTML = filteredOrders.map(order => {
+                    const worker = allWorkers[order.assignedWorker];
+                    let statusIcon = '⏳';
+                    let statusColor = 'status-pending';
+                    let timeInfo = '';
+                    
+                    if (order.status === 'active') {
+                        statusIcon = '🔨';
+                        statusColor = 'status-active';
+                        if (order.startTime) {
+                            timeInfo = `<p style="font-size: 12px; color: #667eea;">Started at: ${new Date(order.startTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</p>`;
+                        }
+                    } else if (order.status === 'completed') {
+                        statusIcon = '✅';
+                        statusColor = 'status-completed';
+                        if (order.completedTime) {
+                            timeInfo = `<p style="font-size: 12px; color: #27ae60;">Completed at: ${order.completedTime.toDate().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</p>`;
+                        }
+                    }
+                    
+                    return `
+                        <div class="list-item">
+                            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                                <div style="font-size: 24px;">${statusIcon}</div>
+                                <div class="item-info">
+                                    <h4>${order.orderNumber} - ${order.productName}</h4>
+                                    <p><strong>Customer:</strong> ${order.customerName || 'Not specified'}</p>
+                                    <p>${order.color} • Size ${order.size} • Qty: ${order.quantity}</p>
+                                    <p>Assigned to: ${worker ? worker.fullName : 'Unassigned'} • Due: ${formatDate(order.dueDate)} ${order.dueTime}</p>
+                                    ${timeInfo}
+                                </div>
+                            </div>
+                            <span class="status-badge ${statusColor}">${order.status}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            modal.classList.add('show');
+        }
+        
+        // Show location orders
+        function showLocationOrders(location) {
+            const modal = document.getElementById('statExpansion');
+            const title = document.getElementById('expansionTitle');
+            const content = document.getElementById('expansionContent');
+            
+            // Filter completed orders by location
+            const completedOrders = allOrders.filter(o => o.status === 'completed');
+            const locationOrders = completedOrders.filter(o => {
+                if (location === 'factory') {
+                    return !o.location || o.location === 'factory';
+                }
+                return o.location === location;
+            });
+            
+            // Set title based on location
+            const titles = {
+                'factory': 'Orders at the Factory',
+                'store': 'Orders at the Store',
+                'transit': 'Orders in Transit to Customer'
+            };
+            
+            title.textContent = titles[location] || 'Orders';
+            
+            if (locationOrders.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #86868b; padding: 40px;">No orders in this location</p>';
+            } else {
+                content.innerHTML = locationOrders.map(order => {
+                    const worker = allWorkers[order.assignedWorker];
+                    const completionDate = order.completedTime ? order.completedTime.toDate() : new Date();
+                    
+                    return `
+                        <div class="list-item" style="margin-bottom: 15px;">
+                            <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                                <div style="font-size: 24px;">📦</div>
+                                <div class="item-info">
+                                    <h4>${order.orderNumber} - ${order.productName}</h4>
+                                    <p><strong>Customer:</strong> ${order.customerName || 'Not specified'}</p>
+                                    <p>${order.color} • Size ${order.size} • Qty: ${order.quantity}</p>
+                                    <p>Completed by: ${worker ? worker.fullName : 'Unknown'} • ${formatDate(completionDate.toISOString().split('T')[0])}</p>
+                                    ${order.completionPhotoUrl ? '<p style="color: #667eea; font-size: 12px;">✓ Has quality photo</p>' : ''}
+                                </div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+                                <select class="form-input" style="width: 200px; padding: 8px;" onchange="updateOrderLocation('${order.id}', this.value)">
+                                    <option value="factory" ${(!order.location || order.location === 'factory') ? 'selected' : ''}>At Factory</option>
+                                    <option value="store" ${order.location === 'store' ? 'selected' : ''}>At Store</option>
+                                    <option value="transit" ${order.location === 'transit' ? 'selected' : ''}>In Transit</option>
+                                </select>
+                                ${order.completionPhotoUrl ? `
+                                    <button class="btn btn-primary btn-small" onclick="viewFullImage('${order.completionPhotoUrl}')">View Photo</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            modal.classList.add('show');
+        }
+        
+        // Update order location
+        async function updateOrderLocation(orderId, newLocation) {
+            try {
+                await db.collection('orders').doc(orderId).update({
+                    location: newLocation,
+                    locationUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Log activity
+                const order = allOrders.find(o => o.id === orderId);
+                const locationNames = {
+                    'factory': 'Factory',
+                    'store': 'Store',
+                    'transit': 'Transit to Customer'
+                };
+                
+                await db.collection('activityLog').add({
+                    type: 'location_update',
+                    description: `Order ${order ? order.orderNumber : orderId} moved to ${locationNames[newLocation]}`,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showMessage('success', 'Order location updated!');
+                
+                // Update the counts immediately
+                updateLiveDashboard();
+                
+            } catch (error) {
+                console.error('Location update error:', error);
+                showMessage('error', 'Failed to update location. Please try again.');
+            }
+        }
+        
+        // Update today's progress
+        async function updateTodayProgress(orders, today) {
+            const todayRelevantOrders = orders.filter(o => 
+                o.dueDate === today || 
+                (o.status === 'completed' && o.completedTime && o.completedTime.toDate().toISOString().split('T')[0] === today) ||
+                (o.status === 'active' && o.startTime && new Date(o.startTime).toISOString().split('T')[0] === today)
+            );
+            
+            if (todayRelevantOrders.length === 0) {
+                document.getElementById('todayProgress').innerHTML = '<p style="text-align: center; color: #86868b;">No orders scheduled, started, or completed today</p>';
+                return;
+            }
+            
+            document.getElementById('todayProgress').innerHTML = todayRelevantOrders.map(order => {
+                const worker = allWorkers[order.assignedWorker];
+                let statusIcon = '⏳';
+                let statusColor = 'status-pending';
+                let timeInfo = '';
+                
+                if (order.status === 'active') {
+                    statusIcon = '🔨';
+                    statusColor = 'status-active';
+                    if (order.startTime) {
+                        timeInfo = `<p style="font-size: 12px; color: #667eea;">Started at: ${new Date(order.startTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</p>`;
+                    }
+                } else if (order.status === 'completed') {
+                    statusIcon = '✅';
+                    statusColor = 'status-completed';
+                    if (order.completedTime) {
+                        timeInfo = `<p style="font-size: 12px; color: #27ae60;">Completed at: ${order.completedTime.toDate().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</p>`;
+                    }
+                }
+                
+                const hasCompletionData = order.completionPhotoUrl || order.completionNotes;
+                const isCompleted = order.status === 'completed';
+                
+                return `
+                    <div class="list-item ${isCompleted && hasCompletionData ? 'expandable' : ''}" 
+                         ${isCompleted && hasCompletionData ? `onclick="toggleOrderDetails('${order.id}')"` : ''}
+                         style="${isCompleted && hasCompletionData ? 'cursor: pointer;' : ''}">
+                        <div style="display: flex; align-items: center; gap: 15px; flex: 1;">
+                            <div style="font-size: 24px;">${statusIcon}</div>
+                            <div class="item-info">
+                                <h4>${order.orderNumber} - ${order.productName}</h4>
+                                <p><strong>Customer:</strong> ${order.customerName || 'Not specified'}</p>
+                                <p>Assigned to: ${worker ? worker.fullName : 'Unassigned'} • Due: ${formatDate(order.dueDate)} ${order.dueTime}</p>
+                                ${timeInfo}
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span class="status-badge ${statusColor}">${order.status}</span>
+                            ${isCompleted && hasCompletionData ? '<span style="color: #667eea; font-size: 12px;">Click to expand ▼</span>' : ''}
+                        </div>
+                    </div>
+                    <div id="order-details-${order.id}" class="order-completion-details">
+                        ${order.completionPhotoUrl ? `
+                            <div>
+                                <h5>Quality Control Photo:</h5>
+                                <img src="${order.completionPhotoUrl}" onclick="viewFullImage('${order.completionPhotoUrl}')" alt="Completion photo">
+                                <p style="font-size: 12px; color: #86868b; margin-top: 5px;">Click image to view full size</p>
+                            </div>
+                        ` : ''}
+                        ${order.completionNotes ? `
+                            <div style="margin-top: 15px;">
+                                <h5>Completion Notes:</h5>
+                                <p>${order.completionNotes}</p>
+                            </div>
+                        ` : ''}
+                        ${order.completionDuration ? `
+                            <p style="margin-top: 15px; font-size: 14px; color: #86868b;">
+                                Time taken: ${Math.floor(order.completionDuration / 60)}h ${order.completionDuration % 60}m
+                            </p>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Update activity feed
+        function updateActivityFeed(snapshot) {
+            const activities = [];
+            snapshot.forEach(doc => {
+                activities.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            
+            if (activities.length === 0) {
+                document.getElementById('activityFeed').innerHTML = '<p style="text-align: center; color: #86868b;">No recent activity</p>';
+                return;
+            }
+            
+            document.getElementById('activityFeed').innerHTML = activities.map(activity => {
+                let icon = '📋';
+                let iconClass = 'start';
+                if (activity.type === 'order_completed') {
+                    icon = '✅';
+                    iconClass = 'complete';
+                } else if (activity.type === 'worker_login' || activity.type === 'worker_logout') {
+                    icon = '👤';
+                    iconClass = 'login';
+                } else if (activity.type === 'order_started') {
+                    icon = '🔨';
+                    iconClass = 'start';
+                } else if (activity.type === 'order_created') {
+                    icon = '📋';
+                    iconClass = 'start';
+                }
+                
+                const time = activity.timestamp ? activity.timestamp.toDate() : new Date();
+                const timeStr = time.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                
+                return `
+                    <div class="activity-item">
+                        <div class="activity-icon ${iconClass}">${icon}</div>
+                        <div class="activity-details">
+                            <div class="activity-title">${activity.description}</div>
+                            <div class="activity-time">${timeStr}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Handle file selection
+        function handleFileSelect(event) {
+            const files = Array.from(event.target.files);
+            selectedFiles = [...selectedFiles, ...files];
+            
+            if (selectedFiles.length > 0) {
+                const fileDisplay = document.getElementById('orderFileDisplay');
+                fileDisplay.style.display = 'block';
+                fileDisplay.innerHTML = `
+                    <div class="file-list">
+                        ${selectedFiles.map((file, index) => `
+                            <div class="file-item">
+                                <span>${file.name}</span>
+                                <button onclick="removeFile(${index})">Remove</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+        
+        // Remove file from selection
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            
+            const fileDisplay = document.getElementById('orderFileDisplay');
+            if (selectedFiles.length === 0) {
+                fileDisplay.style.display = 'none';
+                document.getElementById('orderFile').value = '';
+            } else {
+                fileDisplay.innerHTML = `
+                    <div class="file-list">
+                        ${selectedFiles.map((file, i) => `
+                            <div class="file-item">
+                                <span>${file.name}</span>
+                                <button onclick="removeFile(${i})">Remove</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+        
+        // Handle order submission
+        async function handleOrderSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('create-order-btn');
+            submitBtn.disabled = true;
+            showMessage('loading', 'Creating order...');
+            
+            try {
+                const orderData = {
+                    orderNumber: document.getElementById('orderNumber').value,
+                    customerName: document.getElementById('customerName').value,
+                    productName: document.getElementById('productName').value,
+                    productType: document.getElementById('productType').value,
+                    size: document.getElementById('size').value,
+                    color: document.getElementById('color').value,
+                    quantity: parseInt(document.getElementById('quantity').value),
+                    dueDate: document.getElementById('dueDate').value,
+                    dueTime: document.getElementById('dueTime').value,
+                    priority: document.getElementById('priority').value,
+                    assignedWorker: document.getElementById('assignedWorker').value,
+                    specialInstructions: document.getElementById('specialInstructions').value,
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // Upload files if selected
+                if (selectedFiles.length > 0) {
+                    const storageRef = storage.ref();
+                    const uploadPromises = selectedFiles.map(async (file) => {
+                        const fileRef = storageRef.child(`orders/${Date.now()}_${file.name}`);
+                        const snapshot = await fileRef.put(file);
+                        const downloadUrl = await snapshot.ref.getDownloadURL();
+                        return {
+                            url: downloadUrl,
+                            name: file.name
+                        };
+                    });
+                    
+                    const uploadedFiles = await Promise.all(uploadPromises);
+                    orderData.orderFiles = uploadedFiles;
+                }
+                
+                // Save order
+                await db.collection('orders').add(orderData);
+                
+                // Log activity
+                const workerName = document.getElementById('assignedWorker').selectedOptions[0].text.split(' - ')[0];
+                await db.collection('activityLog').add({
+                    type: 'order_created',
+                    description: `New order ${orderData.orderNumber} for ${orderData.customerName} assigned to ${workerName || 'Unassigned'}`,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                showMessage('success', 'Order created successfully!');
+                document.getElementById('order-form').reset();
+                document.getElementById('orderFileDisplay').style.display = 'none';
+                selectedFiles = [];
+                
+            } catch (error) {
+                console.error('Order creation error:', error);
+                showMessage('error', 'Failed to create order. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // Handle worker submission
+        async function handleWorkerSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('add-worker-btn');
+            submitBtn.disabled = true;
+            showMessage('loading', 'Adding cordwainer...');
+            
+            try {
+                const workerData = {
+                    username: document.getElementById('workerUsername').value,
+                    password: document.getElementById('workerPassword').value,
+                    fullName: document.getElementById('workerFullName').value,
+                    station: document.getElementById('workerStation').value,
+                    role: 'worker',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                // Check if username already exists
+                const existingWorker = await db.collection('workers')
+                    .where('username', '==', workerData.username)
+                    .get();
+                
+                if (!existingWorker.empty) {
+                    showMessage('error', 'Username already exists!');
+                    submitBtn.disabled = false;
+                    return;
+                }
+                
+                await db.collection('workers').add(workerData);
+                
+                showMessage('success', 'Cordwainer added successfully!');
+                document.getElementById('worker-form').reset();
+                
+            } catch (error) {
+                console.error('Worker creation error:', error);
+                showMessage('error', 'Failed to add cordwainer. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // Load workers into dropdown
+        async function loadWorkersDropdown() {
+            try {
+                const dropdown = document.getElementById('assignedWorker');
+                
+                dropdown.innerHTML = '<option value="">Select Cordwainer</option>';
+                Object.entries(allWorkers).forEach(([id, worker]) => {
+                    dropdown.innerHTML += `<option value="${id}">${worker.fullName} - ${worker.station}</option>`;
+                });
+            } catch (error) {
+                console.error('Load workers error:', error);
+            }
+        }
+        
+        // Refresh orders list
+        async function refreshOrders() {
+            try {
+                const ordersList = document.getElementById('orders-list');
+                
+                if (allOrders.length === 0) {
+                    ordersList.innerHTML = '<p style="text-align: center; color: #86868b;">No orders yet. Create your first order above!</p>';
+                    return;
+                }
+                
+                // Sort by due date
+                const sortedOrders = [...allOrders].sort((a, b) => {
+                    const dateA = new Date(a.dueDate + ' ' + a.dueTime);
+                    const dateB = new Date(b.dueDate + ' ' + b.dueTime);
+                    return dateA - dateB;
+                });
+                
+                let ordersHtml = '';
+                sortedOrders.forEach(order => {
+                    const worker = allWorkers[order.assignedWorker];
+                    const statusClass = order.status === 'completed' ? 'status-completed' : 
+                                      order.status === 'active' ? 'status-active' : 'status-pending';
+                    
+                    ordersHtml += `
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>${order.orderNumber} - ${order.productName}</h4>
+                                <p><strong>Customer:</strong> ${order.customerName || 'Not specified'}</p>
+                                <p>${order.color} • Size ${order.size} • Due: ${formatDate(order.dueDate)} at ${order.dueTime}</p>
+                                <p>Assigned to: ${worker ? worker.fullName : 'Unassigned'}</p>
+                            </div>
+                            <div class="item-actions">
+                                <span class="status-badge ${statusClass}">${order.status}</span>
+                                <button class="btn btn-danger btn-small" onclick="deleteOrder('${order.id}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                ordersList.innerHTML = ordersHtml;
+                
+            } catch (error) {
+                console.error('Refresh orders error:', error);
+            }
+        }
+        
+        // Refresh workers list
+        async function refreshWorkers() {
+            try {
+                const workersList = document.getElementById('workers-list');
+                
+                if (Object.keys(allWorkers).length === 0) {
+                    workersList.innerHTML = '<p style="text-align: center; color: #86868b;">No cordwainers yet. Add your first cordwainer above!</p>';
+                    return;
+                }
+                
+                // Calculate worker stats
+                const ordersByWorker = {};
+                allOrders.forEach(order => {
+                    if (!ordersByWorker[order.assignedWorker]) {
+                        ordersByWorker[order.assignedWorker] = { active: 0, completed: 0, pending: 0 };
+                    }
+                    if (order.status === 'active') {
+                        ordersByWorker[order.assignedWorker].active++;
+                    } else if (order.status === 'completed') {
+                        ordersByWorker[order.assignedWorker].completed++;
+                    } else if (order.status === 'pending') {
+                        ordersByWorker[order.assignedWorker].pending++;
+                    }
+                });
+                
+                let workersHtml = '';
+                Object.entries(allWorkers).forEach(([id, worker]) => {
+                    const orders = ordersByWorker[id] || { active: 0, completed: 0, pending: 0 };
+                    
+                    workersHtml += `
+                        <div class="list-item">
+                            <div class="item-info">
+                                <h4>${worker.fullName}</h4>
+                                <p>Username: ${worker.username} • Station: ${worker.station}</p>
+                                <p style="margin-top: 5px; font-size: 13px;">Orders: ${orders.active} active, ${orders.pending} pending, ${orders.completed} completed</p>
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn btn-danger btn-small" onclick="deleteWorker('${id}')">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                workersList.innerHTML = workersHtml;
+                
+            } catch (error) {
+                console.error('Refresh workers error:', error);
+            }
+        }
+        
+        // Update reports
+        async function updateReports() {
+            const startDate = document.getElementById('reportStartDate').value;
+            const endDate = document.getElementById('reportEndDate').value;
+            
+            if (!startDate || !endDate) return;
+            
+            const reportsContent = document.getElementById('reports-content');
+            reportsContent.innerHTML = '<div class="loading-spinner"></div>';
+            
+            try {
+                // Filter orders by date range
+                const filteredOrders = allOrders.filter(order => {
+                    const orderDate = order.dueDate;
+                    return orderDate >= startDate && orderDate <= endDate;
+                });
+                
+                // Calculate statistics
+                const completedOrders = filteredOrders.filter(o => o.status === 'completed');
+                const totalValue = filteredOrders.reduce((sum, o) => sum + (o.quantity || 1), 0);
+                const avgCompletionTime = completedOrders.reduce((sum, o) => {
+                    return sum + (o.completionDuration || 0);
+                }, 0) / (completedOrders.length || 1);
+                
+                // Worker performance - FIXED to include active status
+                const workerStats = {};
+                filteredOrders.forEach(order => {
+                    if (!order.assignedWorker) return;
+                    
+                    if (!workerStats[order.assignedWorker]) {
+                        workerStats[order.assignedWorker] = {
+                            name: allWorkers[order.assignedWorker]?.fullName || 'Unknown',
+                            total: 0,
+                            completed: 0,
+                            active: 0,
+                            pending: 0,
+                            totalTime: 0
+                        };
+                    }
+                    
+                    workerStats[order.assignedWorker].total++;
+                    
+                    // Properly track all statuses
+                    if (order.status === 'completed') {
+                        workerStats[order.assignedWorker].completed++;
+                        if (order.completionDuration) {
+                            workerStats[order.assignedWorker].totalTime += order.completionDuration;
+                        }
+                    } else if (order.status === 'active') {
+                        workerStats[order.assignedWorker].active++;
+                    } else if (order.status === 'pending') {
+                        workerStats[order.assignedWorker].pending++;
+                    }
+                });
+                
+                // Product type statistics
+                const productStats = {};
+                filteredOrders.forEach(order => {
+                    const type = order.productType || 'unspecified';
+                    if (!productStats[type]) {
+                        productStats[type] = { count: 0, completed: 0 };
+                    }
+                    productStats[type].count++;
+                    if (order.status === 'completed') {
+                        productStats[type].completed++;
+                    }
+                });
+                
+                reportsContent.innerHTML = `
+                    <div class="report-card">
+                        <h3>Overview (${formatDate(startDate)} - ${formatDate(endDate)})</h3>
+                        <div class="report-stats">
+                            <div class="report-stat">
+                                <div class="report-stat-value">${filteredOrders.length}</div>
+                                <div class="report-stat-label">Total Orders</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="report-stat-value">${completedOrders.length}</div>
+                                <div class="report-stat-label">Completed</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="report-stat-value">${totalValue}</div>
+                                <div class="report-stat-label">Total Pairs</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="report-stat-value">${Math.round(avgCompletionTime)}m</div>
+                                <div class="report-stat-label">Avg. Time</div>
+                            </div>
+                            <div class="report-stat">
+                                <div class="report-stat-value">${completedOrders.length > 0 ? Math.round((completedOrders.length / filteredOrders.length) * 100) : 0}%</div>
+                                <div class="report-stat-label">Completion Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="report-card">
+                        <h3>Cordwainer Performance</h3>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Cordwainer</th>
+                                    <th>Total Orders</th>
+                                    <th>Completed</th>
+                                    <th>In Progress</th>
+                                    <th>Pending</th>
+                                    <th>Avg. Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.entries(workerStats).map(([id, stats]) => `
+                                    <tr>
+                                        <td>${stats.name}</td>
+                                        <td>${stats.total}</td>
+                                        <td>${stats.completed}</td>
+                                        <td>${stats.active}</td>
+                                        <td>${stats.pending}</td>
+                                        <td>${stats.completed > 0 ? Math.round(stats.totalTime / stats.completed) : 0}m</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="report-card">
+                        <h3>Product Type Analysis</h3>
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Product Type</th>
+                                    <th>Total Orders</th>
+                                    <th>Completed</th>
+                                    <th>Completion Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.entries(productStats).sort((a, b) => b[1].count - a[1].count).map(([type, stats]) => `
+                                    <tr>
+                                        <td>${formatProductType(type)}</td>
+                                        <td>${stats.count}</td>
+                                        <td>${stats.completed}</td>
+                                        <td>${Math.round((stats.completed / stats.count) * 100)}%</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Reports error:', error);
+                reportsContent.innerHTML = '<p style="text-align: center; color: #e74c3c;">Error loading reports. Please try again.</p>';
+            }
+        }
+        
+        // Set date range for reports
+        function setDateRange(range) {
+            const today = new Date();
+            const startDateInput = document.getElementById('reportStartDate');
+            const endDateInput = document.getElementById('reportEndDate');
+            
+            endDateInput.value = today.toISOString().split('T')[0];
+            
+            switch(range) {
+                case 'today':
+                    startDateInput.value = today.toISOString().split('T')[0];
+                    break;
+                case 'week':
+                    const weekStart = new Date(today);
+                    weekStart.setDate(today.getDate() - 7);
+                    startDateInput.value = weekStart.toISOString().split('T')[0];
+                    break;
+                case 'month':
+                    const monthStart = new Date(today);
+                    monthStart.setMonth(today.getMonth() - 1);
+                    startDateInput.value = monthStart.toISOString().split('T')[0];
+                    break;
+            }
+            
+            updateReports();
+        }
+        
+        // Format product type
+        function formatProductType(type) {
+            if (!type || type === 'unspecified') return 'Not Specified';
+            return type.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+        
+        // Format time
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-GB', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Helper functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        
+        async function deleteOrder(id) {
+            if (confirm('Are you sure you want to delete this order?')) {
+                try {
+                    await db.collection('orders').doc(id).delete();
+                    showMessage('success', 'Order deleted successfully!');
+                } catch (error) {
+                    console.error('Delete order error:', error);
+                    showMessage('error', 'Failed to delete order.');
+                }
+            }
+        }
+        
+        async function deleteWorker(id) {
+            if (confirm('Are you sure you want to remove this cordwainer?')) {
+                try {
+                    await db.collection('workers').doc(id).delete();
+                    showMessage('success', 'Cordwainer removed successfully!');
+                } catch (error) {
+                    console.error('Delete worker error:', error);
+                    showMessage('error', 'Failed to remove cordwainer.');
+                }
+            }
+        }
+        
+        function resetForm() {
+            document.getElementById('order-form').reset();
+            document.getElementById('orderFileDisplay').style.display = 'none';
+            selectedFiles = [];
+        }
+        
+        function toggleOrderDetails(orderId) {
+            const detailsDiv = document.getElementById('order-details-' + orderId);
+            if (detailsDiv) {
+                if (detailsDiv.style.display === 'none' || !detailsDiv.style.display) {
+                    detailsDiv.style.display = 'block';
+                } else {
+                    detailsDiv.style.display = 'none';
+                }
+            }
+        }
+        
+        function viewFullImage(imageSrc) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+                cursor: pointer;
+            `;
+            
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            img.style.cssText = `
+                max-width: 90%;
+                max-height: 90%;
+                border-radius: 10px;
+            `;
+            
+            modal.appendChild(img);
+            modal.onclick = () => modal.remove();
+            document.body.appendChild(modal);
+        }
+        
+        // Clean up listeners on page unload
+        window.addEventListener('beforeunload', () => {
+            unsubscribers.forEach(unsubscribe => unsubscribe());
+        });
+    </script>
+
+</body></html>
